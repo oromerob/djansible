@@ -18,10 +18,10 @@ class Host(models.Model):
     )
 
     def __unicode__(self):
-        return self.name
+        return u"%s" % self.name
 
-    #def properties(self):
-    #    return self.var_set.all()
+    def properties(self):
+        return self.var_set.all()
 
 
 class Var(models.Model):
@@ -34,3 +34,9 @@ class Var(models.Model):
     value = models.CharField(
         max_length=255,
     )
+
+    def __unicode__(self):
+        return u"%s / %s" % (self.host, self.var_key)
+
+    class Meta:
+        unique_together = (("host", "var_key"),)

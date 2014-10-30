@@ -13,7 +13,7 @@ class VarGroup(models.Model):
     )
 
     def __unicode__(self):
-        return self.name
+        return u"%s" % self.name
 
 
 class VarKey(models.Model):
@@ -28,4 +28,4 @@ class VarKey(models.Model):
     )
 
     def __unicode__(self):
-        return "%s / %s" % (self.var_group, self.name)
+        return u"%s / %s" % (self.var_group, self.name)
