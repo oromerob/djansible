@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import VarKey, VarGroup
+from apps.hosts.admin import HostVarGroupsInline
 
 
 class VarKeyInline(admin.StackedInline):
@@ -8,7 +9,7 @@ class VarKeyInline(admin.StackedInline):
 
 
 class VarGroupAdmin(admin.ModelAdmin):
-    inlines = [VarKeyInline, ]
+    inlines = [HostVarGroupsInline, VarKeyInline, ]
 
 
 admin.site.register(VarGroup, VarGroupAdmin)

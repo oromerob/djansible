@@ -14,7 +14,8 @@ class Host(models.Model):
         blank=True,
     )
     var_group = models.ManyToManyField(
-        VarGroup
+        VarGroup,
+        through='HostVarGroups',
     )
 
     def __unicode__(self):
@@ -40,3 +41,13 @@ class Var(models.Model):
 
     class Meta:
         unique_together = (("host", "var_key"),)
+
+
+class HostVarGroups(models.Model):
+    '''Taula intermitja per poder afegir múltiples vegades la mateixa
+    instància.
+
+    '''
+
+    host = models.ForeignKey(Host)
+    var_group = models.ForeignKey(VarGroup)
