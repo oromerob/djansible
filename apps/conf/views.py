@@ -1,11 +1,8 @@
 from django.http import HttpResponse
-from django.template import RequestContext, loader
+import json
 
 from apps.hosts.models import *
 from apps.conf.models import *
-
-import json
-
 
 def export_json(request):
 	hosts = Host.objects.all()
@@ -14,7 +11,7 @@ def export_json(request):
 		if not host in export: export[host.name]={}
 		groups = HostVarGroups.objects.filter(host=host)
 		for group in groups:
-			if not group in export[host.name]: export[host.name][group.var_group.name]=[]
+			if not group.var_group.name in export[host.name]: export[host.name][group.var_group.name]=[]
 			values = Var.objects.filter(host_var_group=group)
 			finalvalue={}
 			for value in values:
