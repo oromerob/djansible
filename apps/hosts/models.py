@@ -3,6 +3,7 @@ from django.db import models
 
 from apps.conf.models import VarDef, VarGroupDef
 
+
 class Host(models.Model):
     '''Hosts.
     '''
@@ -48,7 +49,8 @@ class Var(models.Model):
 
 
 class HostVarGroups(models.Model):
-    '''Classe intermèdia per poder afegir múltiples vegades la mateixa instància.
+    '''Classe intermèdia per poder afegir múltiples vegades la mateixa
+    instància.
     '''
 
     host = models.ForeignKey(
@@ -84,25 +86,27 @@ class HostVarGroups(models.Model):
 # Classes per definir configuracions per grup
 
 class Group(models.Model):
-	''' Grups de hosts
-	'''
+    ''' Grups de hosts
 
-	name = models.CharField(max_length=200)
+    '''
 
-	hosts = models.ManyToManyField(Host)
+    name = models.CharField(max_length=200)
 
-	var_group = models.ManyToManyField(
-		VarGroupDef,
-		through='GroupVarGroups',
-		verbose_name=u'Grup de variables pel grup',
-	)
+    hosts = models.ManyToManyField(Host)
 
+    var_group = models.ManyToManyField(
+        VarGroupDef,
+        through='GroupVarGroups',
+        verbose_name=u'Grup de variables pel grup',
+    )
 
-	def __unicode__(self):
-		return u"%s" % self.name
+    def __unicode__(self):
+        return u"%s" % self.name
+
 
 class GroupVarGroups(models.Model):
-    '''Classe intermèdia per poder afegir múltiples vegades la mateixa instància.
+    '''Classe intermèdia per poder afegir múltiples vegades la mateixa
+    instància.
     '''
 
     group = models.ForeignKey(
@@ -129,6 +133,7 @@ class GroupVarGroups(models.Model):
                 var_def=var
             )
 
+
 class GroupVar(models.Model):
     '''Vars amb valor.
     '''
@@ -153,4 +158,3 @@ class GroupVar(models.Model):
 
     def __unicode__(self):
         return u"%s / %s" % (self.group_var_group, self.var_def)
-
