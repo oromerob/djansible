@@ -1,15 +1,14 @@
 from django.contrib import admin
 
-from .models import VarKey, VarGroup
-from apps.hosts.admin import HostVarGroupsInline
+from .models import VarDef, VarGroupDef
 
 
-class VarKeyInline(admin.StackedInline):
-    model = VarKey
+class VarDefInline(admin.StackedInline):
+    model = VarDef
 
 
-class VarGroupAdmin(admin.ModelAdmin):
-    inlines = [HostVarGroupsInline, VarKeyInline, ]
+class VarGroupDefAdmin(admin.ModelAdmin):
+    inlines = [VarDefInline, ]
 
 
-admin.site.register(VarGroup, VarGroupAdmin)
+admin.site.register(VarGroupDef, VarGroupDefAdmin)

@@ -1,36 +1,23 @@
 from django.contrib import admin
-from django import forms
 
 from .models import Host, Var, HostVarGroups
-from apps.conf.models import VarKey
 
 
-class VarInline(admin.StackedInline):
+class VarInline(admin.TabularInline):
     model = Var
+    extra = 0
+    readonly_fields = ('var_def', 'host_var_group', )
 
-    def formfield_for_dbfield(self, field, **kwargs):
-        if field.name == 'var_key':
-            try:
-                parent_host = self.get_object(kwargs['request'], Host)
-                groups = parent_host.var_group.all().distinct()
-                properties = VarKey.objects.filter(var_group__in=groups)
-                return forms.ModelChoiceField(queryset=properties)
-            except:
-                properties = VarKey.objects.none()
-        return super(VarInline, self).formfield_for_dbfield(field, **kwargs)
+    def has_add_permission(self, request):
+        return False
 
-    def get_object(self, request, model):
-        object_id = request.META['PATH_INFO'].strip('/').split('/')[-1]
-        try:
-            object_id = int(object_id)
-        except ValueError:
-            return None
-        return model.objects.get(pk=object_id)
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class HostVarGroupsInline(admin.StackedInline):
     model = HostVarGroups
-    extra = 1
+    extra = 0
 
 
 class HostAdmin(admin.ModelAdmin):
