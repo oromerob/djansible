@@ -8,7 +8,7 @@ def export_json(request):
 	hosts = Host.objects.all()
 	export = {}
 	for host in hosts:
-		if not host in export: export[host.name]={}
+		if not host.name in export: export[host.name]={}
 		groups = HostVarGroups.objects.filter(host=host)
 		for group in groups:
 			if not group.var_group.name in export[host.name]: export[host.name][group.var_group.name]=[]
@@ -18,5 +18,5 @@ def export_json(request):
 				finalvalue[value.var_def.name]=value.value
 			export[host.name][group.var_group.name].append(finalvalue)
 				
-	return HttpResponse(json.dumps(export, indent=3), content_type="application/json")
+	return HttpResponse(json.dumps(export, indent=2), content_type="application/json")
 

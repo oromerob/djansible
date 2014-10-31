@@ -3,7 +3,6 @@ from django.db import models
 
 from apps.conf.models import VarDef, VarGroupDef
 
-
 class Host(models.Model):
     '''Hosts.
 
@@ -84,3 +83,14 @@ class HostVarGroups(models.Model):
                 host_var_group=self,
                 var_def=var
             )
+
+class Group(models.Model):
+	''' Grps
+	'''
+
+	name = models.CharField(max_length=200)
+
+	hosts = models.ManyToManyField(Host)
+
+	def __unicode__(self):
+		return u"%s" % self.name

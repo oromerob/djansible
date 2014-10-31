@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Host, Var, HostVarGroups
+from .models import Host, Var, HostVarGroups, Group
 
 
 class VarInline(admin.TabularInline):
@@ -25,3 +25,4 @@ class HostAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Host, HostAdmin)
+admin.site.register(Group)
