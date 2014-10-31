@@ -77,6 +77,11 @@ class HostVarGroups(models.Model):
             return u"%s - %s #%s" % (self.host, self.var_group, self.pk)
 
     def save(self, *args, **kwargs):
+        '''Cada vegada que es desa una instància de HostVarGroups, es comprova
+        que existeixin totes les variables que en depenen, sinó les crea.
+
+        '''
+
         super(HostVarGroups, self).save(*args, **kwargs)
         for var in self.var_group.vardef_set.all():
             Var.objects.get_or_create(
