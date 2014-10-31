@@ -5,7 +5,6 @@ from apps.conf.models import VarDef, VarGroupDef
 
 class Host(models.Model):
     '''Hosts.
-
     '''
 
     name = models.CharField(
@@ -24,7 +23,6 @@ class Host(models.Model):
 
 class Var(models.Model):
     '''Vars amb valor.
-
     '''
 
     host = models.ForeignKey(
@@ -50,9 +48,7 @@ class Var(models.Model):
 
 
 class HostVarGroups(models.Model):
-    '''Classe intermèdia per poder afegir múltiples vegades la mateixa
-    instància.
-
+    '''Classe intermèdia per poder afegir múltiples vegades la mateixa instància.
     '''
 
     host = models.ForeignKey(
@@ -62,11 +58,6 @@ class HostVarGroups(models.Model):
     var_group = models.ForeignKey(
         VarGroupDef,
         verbose_name=u'grup de variables',
-    )
-    name = models.CharField(
-        max_length=200,
-        blank=True,
-        verbose_name=u'nom',
     )
 
     def __unicode__(self):
@@ -84,13 +75,77 @@ class HostVarGroups(models.Model):
                 var_def=var
             )
 
+
+# Classes per definir configuracions per grup
+
 class Group(models.Model):
-	''' Grps
+	''' Grups de hosts
 	'''
 
 	name = models.CharField(max_length=200)
 
 	hosts = models.ManyToManyField(Host)
 
+	var_group = models.ManyToManyField(
+		VarGroupDef,
+		through='GroupVarGroups',
+		verbose_name=u'Grup de variables pel grup',
+	)
+
+
 	def __unicode__(self):
 		return u"%s" % self.name
+
+class GroupVarGroups(models.Model):
+    '''Classe intermèdia per poder afegir múltiples vegades la mateixa instància.
+    '''
+
+    group = models.ForeignKey(
+        Group,
+        verbose_name=u'grup',
+    )
+    var_group = models.ForeignKey(
+        VarGroupDef,
+        verbose_name=u'grup de variables',
+    )
+
+    def __unicode__(self):
+        if self.name:
+            return u"%s - %s - %s" % (self.group, self.var_group, self.name)
+        else:
+            return u"%s - %s #%s" % (self.group, self.var_group, self.pk)
+
+    def save(self, *args, **kwargs):
+        super(GroupVarGroups, self).save(*args, **kwargs)
+        for var in self.var_group.vardef_set.all():
+            Var.objects.get_or_create(
+                group=self.group,
+                group_var_group=self,
+                var_def=var
+            )
+
+class GroupVar(models.Model):
+    '''Vars amb valor.
+    '''
+
+    group = models.ForeignKey(
+        Group,
+        verbose_name=u'group',
+    )
+    group_var_group = models.ForeignKey(
+        'hosts.GroupVarGroups',
+        verbose_name=u'Grup de variables del grup',
+    )
+    var_def = models.ForeignKey(
+        VarDef,
+        verbose_name=u'definició variable',
+    )
+    value = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=u'valor',
+    )
+
+    def __unicode__(self):
+        return u"%s / %s" % (self.group_var_group, self.var_def)
+
