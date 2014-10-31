@@ -63,9 +63,12 @@ class HostVarGroups(models.Model):
     )
 
     def __unicode__(self):
-        if self.name:
-            return u"%s - %s - %s" % (self.host, self.var_group, self.name)
-        else:
+        try:
+            if self.name:
+                return u"%s - %s - %s" % (self.host, self.var_group, self.name)
+            else:
+                return u"%s - %s #%s" % (self.host, self.var_group, self.pk)
+        except:
             return u"%s - %s #%s" % (self.host, self.var_group, self.pk)
 
     def save(self, *args, **kwargs):
