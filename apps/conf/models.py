@@ -37,3 +37,8 @@ class VarDef(models.Model):
     class Meta:
         verbose_name = u"Var Definition"
         verbose_name_plural = u"Var Definitions"
+
+    def save(self, *args, **kwargs):
+        super(VarDef, self).save(*args, **kwargs)
+        for group in self.var_group.hostvargroups_set.all():
+            group.save()
