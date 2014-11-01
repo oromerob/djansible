@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Host, Var, HostVarGroups, Group, GroupVar, GroupVarGroups
+from .models import Host, Var, HostVarGroups, HostGroup
 
 
 class VarInline(admin.TabularInline):
@@ -15,32 +15,34 @@ class VarInline(admin.TabularInline):
         return False
 
 
-class HostVarGroupsInline(admin.StackedInline):
+class HostVarInline(VarInline):
+    exclude = ['host_group', ]
+
+
+class HostGroupVarInline(VarInline):
+    exclude = ['host', ]
+
+
+class VarGroupsInline(admin.StackedInline):
     model = HostVarGroups
     extra = 0
 
 
+class HostVarGroupsInline(VarGroupsInline):
+    exclude = ['host_group', ]
+
+
+class HostGroupVarGroupsInline(VarGroupsInline):
+    exclude = ['host', ]
+
+
 class HostAdmin(admin.ModelAdmin):
-    inlines = [HostVarGroupsInline, VarInline, ]
+    inlines = [HostVarGroupsInline, HostVarInline, ]
 
-class GroupVarGroupsInline(admin.StackedInline):
-	model = GroupVarGroups
-	extra = 0
 
-class GroupVarInline(admin.TabularInline):
-	model = GroupVar
-	extra = 0
-	readonly_fields = ('var_def', 'group_var_group', )
-	readonly_fields = ('var_def',  )
-	
-	def has_add_permission(self, request):
-		return False
+class HostGroupAdmin(admin.ModelAdmin):
+    inlines = [HostGroupVarGroupsInline, HostGroupVarInline, ]
 
-	def has_delete_permission(self, request, obj=None):
-		return False
-
-class GroupAdmin(admin.ModelAdmin):
-	inlines = [GroupVarGroupsInline, GroupVarInline, ]
 
 admin.site.register(Host, HostAdmin)
-admin.site.register(Group, GroupAdmin)
+admin.site.register(HostGroup, HostGroupAdmin)

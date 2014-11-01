@@ -39,6 +39,12 @@ class VarDef(models.Model):
         verbose_name_plural = u"Var Definitions"
 
     def save(self, *args, **kwargs):
+        '''Cada vegada que s'afegeixi o modifiqui una VarDef,
+        s'executa save() als HostVarGroups on pertany, de manera
+        que si no existeix, es crea i sinó es queda igual.
+
+        '''
+
         super(VarDef, self).save(*args, **kwargs)
         for group in self.var_group.hostvargroups_set.all():
-            group.save()
+            group.check_vars()
