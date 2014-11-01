@@ -4,11 +4,15 @@ from .models import Host, Var, HostVarGroups, HostGroup
 from .forms import VarModelForm
 
 
-class VarInline(admin.TabularInline):
+from nested_inline.admin import NestedStackedInline, NestedModelAdmin
+
+
+class VarInline(NestedStackedInline,):
     model = Var
     form = VarModelForm
     extra = 0
-    readonly_fields = ('var_def', 'host_var_group', )
+#    readonly_fields = ('var_def', 'host_var_group', )
+    fields = [ 'value', ]
 
     def has_add_permission(self, request):
         return False
@@ -25,25 +29,27 @@ class HostGroupVarInline(VarInline):
     exclude = ['host', ]
 
 
-class VarGroupsInline(admin.StackedInline):
+class VarGroupsInline(NestedStackedInline,):
     model = HostVarGroups
     extra = 0
 
 
 class HostVarGroupsInline(VarGroupsInline):
     exclude = ['host_group', ]
+    inlines = [ HostVarInline, ]
 
 
 class HostGroupVarGroupsInline(VarGroupsInline):
     exclude = ['host', ]
+    inlines = [ HostGroupVarInline, ]
 
 
-class HostAdmin(admin.ModelAdmin):
-    inlines = [HostVarGroupsInline, HostVarInline, ]
+class HostAdmin(NestedModelAdmin):
+    inlines = [ HostVarGroupsInline, ]
 
 
-class HostGroupAdmin(admin.ModelAdmin):
-    inlines = [HostGroupVarGroupsInline, HostGroupVarInline, ]
+class HostGroupAdmin(NestedModelAdmin):
+    inlines = [HostGroupVarGroupsInline, ]
 
 
 admin.site.register(Host, HostAdmin)
