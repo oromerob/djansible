@@ -20,6 +20,20 @@ class VarGroupDef(models.Model):
         verbose_name_plural = u"Var Group Definitions"
 
 
+class VarType(models.Model):
+
+    name = models.CharField(
+        max_length=200,
+    )
+    validator = models.CharField(
+        max_length=200,
+        blank=True,
+    )
+
+    def __unicode__(self):
+        return self.name
+
+
 class VarDef(models.Model):
     '''Definició de les variables disponibles.
 
@@ -28,6 +42,11 @@ class VarDef(models.Model):
     var_group = models.ForeignKey(VarGroupDef)
     name = models.CharField(
         max_length=200,
+        blank=True,
+    )
+    var_type = models.ForeignKey(
+        VarType,
+        null=True,
         blank=True,
     )
 

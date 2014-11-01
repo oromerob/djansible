@@ -1,10 +1,12 @@
 from django.contrib import admin
 
 from .models import Host, Var, HostVarGroups, HostGroup
+from .forms import VarModelForm
 
 
 class VarInline(admin.TabularInline):
     model = Var
+    form = VarModelForm
     extra = 0
     readonly_fields = ('var_def', 'host_var_group', )
 
