@@ -22,6 +22,17 @@ class Host(models.Model):
         return u"%s" % self.name
 
 
+class HostGroup(models.Model):
+    ''' Grups de hosts
+    '''
+
+    name = models.CharField(max_length=200)
+    hosts = models.ManyToManyField(Host)
+
+    def __unicode__(self):
+        return u"%s" % self.name
+
+
 class Var(models.Model):
     '''Vars amb valor.
     '''
@@ -56,6 +67,14 @@ class HostVarGroups(models.Model):
     host = models.ForeignKey(
         Host,
         verbose_name=u'host',
+        blank=True,
+        null=True,
+    )
+    host_group = models.ForeignKey(
+        HostGroup,
+        verbose_name=u'host group',
+        blank=True,
+        null=True,
     )
     var_group = models.ForeignKey(
         VarGroupDef,
@@ -78,23 +97,17 @@ class HostVarGroups(models.Model):
         '''
 
         super(HostVarGroups, self).save(*args, **kwargs)
+        self.check_vars()
+
+    def check_vars(self):
+        '''Mètode que comprova que existeixin totes les variables que
+        depenen d'una instància de HostVarGroups, sinó les crea.
+
+        '''
+
         for var in self.var_group.vardef_set.all():
             Var.objects.get_or_create(
                 host=self.host,
                 host_var_group=self,
                 var_def=var
             )
-
-
-# Classes per definir configuracions per grup
-
-class HostGroup(models.Model):
-    ''' Grups de hosts
-    '''
-
-    name = models.CharField(max_length=200)
-
-    hosts = models.ManyToManyField(Host)
-
-    def __unicode__(self):
-        return u"%s" % self.name

@@ -47,4 +47,4 @@ class VarDef(models.Model):
 
         super(VarDef, self).save(*args, **kwargs)
         for group in self.var_group.hostvargroups_set.all():
-            group.save()
+            group.check_vars()
