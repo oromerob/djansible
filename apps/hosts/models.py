@@ -40,6 +40,14 @@ class Var(models.Model):
     host = models.ForeignKey(
         Host,
         verbose_name=u'host',
+        blank=True,
+        null=True,
+    )
+    host_group = models.ForeignKey(
+        HostGroup,
+        verbose_name=u'host',
+        blank=True,
+        null=True,
     )
     host_var_group = models.ForeignKey(
         'hosts.HostVarGroups',
@@ -105,9 +113,13 @@ class HostVarGroups(models.Model):
 
         '''
 
-        for var in self.var_group.vardef_set.all():
-            Var.objects.get_or_create(
-                host=self.host,
-                host_var_group=self,
-                var_def=var
-            )
+        try:
+            for var in self.var_group.vardef_set.all():
+                Var.objects.get_or_create(
+                    host=self.host,
+                    host_group=self.host_group,
+                    host_var_group=self,
+                    var_def=var
+                )
+        except:
+            pass

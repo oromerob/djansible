@@ -15,14 +15,34 @@ class VarInline(admin.TabularInline):
         return False
 
 
-class HostVarGroupsInline(admin.StackedInline):
+class HostVarInline(VarInline):
+    exclude = ['host_group', ]
+
+
+class HostGroupVarInline(VarInline):
+    exclude = ['host', ]
+
+
+class VarGroupsInline(admin.StackedInline):
     model = HostVarGroups
     extra = 0
 
 
+class HostVarGroupsInline(VarGroupsInline):
+    exclude = ['host_group', ]
+
+
+class HostGroupVarGroupsInline(VarGroupsInline):
+    exclude = ['host', ]
+
+
 class HostAdmin(admin.ModelAdmin):
-    inlines = [HostVarGroupsInline, VarInline, ]
+    inlines = [HostVarGroupsInline, HostVarInline, ]
+
+
+class HostGroupAdmin(admin.ModelAdmin):
+    inlines = [HostGroupVarGroupsInline, HostGroupVarInline, ]
 
 
 admin.site.register(Host, HostAdmin)
-admin.site.register(HostGroup)
+admin.site.register(HostGroup, HostGroupAdmin)
