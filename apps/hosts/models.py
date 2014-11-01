@@ -121,5 +121,5 @@ class HostVarGroups(models.Model):
                     host_var_group=self,
                     var_def=var
                 )
-        except:
-            pass
+        except Exception, e:
+            raise e
