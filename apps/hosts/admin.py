@@ -11,7 +11,7 @@ from nested_inline.admin import (
 )
 
 
-class VarInline(NestedTabularInline,):
+class VarInline(NestedTabularInline):
     model = Var
     form = VarModelForm
     extra = 0
@@ -32,7 +32,7 @@ class HostGroupVarInline(VarInline):
     exclude = ['host', ]
 
 
-class VarGroupsInline(NestedStackedInline,):
+class VarGroupsInline(NestedStackedInline):
     model = HostVarGroups
     extra = 0
 

@@ -109,11 +109,17 @@ class HostVarGroups(models.Model):
 
         try:
             for var in self.var_group.vardef_set.all():
-                Var.objects.get_or_create(
-                    host=self.host,
-                    host_group=self.host_group,
-                    host_var_group=self,
-                    var_def=var
-                )
+                try:
+                    Var.objects.get(
+                        host_var_group=self,
+                        var_def=var
+                    )
+                except:
+                    Var.objects.create(
+                        host=self.host,
+                        host_group=self.host_group,
+                        host_var_group=self,
+                        var_def=var
+                    )
         except Exception, e:
             raise e
